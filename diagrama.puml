@@ -1,0 +1,283 @@
+@startuml
+class com.alasdeplata.models.FlightPrice {
+- Long id
+- Flight flight
+- FlightClass flightClass
+- BigDecimal price
+}
+
+class com.alasdeplata.models.Payment {
+- Long id
+- Reservation reservation
+- BigDecimal amount
+- LocalDateTime paymentDate
+- PaymentMethod paymentMethod
+}
+
+interface com.alasdeplata.repository.AiInteractionRepository {
+}
+interface com.alasdeplata.repository.DestinatioRepository {
+}
+class com.alasdeplata.models.Destination {
+- Long id
+- String city
+- String country
+- String airportCode
+}
+
+class com.alasdeplata.models.ReservationPassenger {
+- Long id
+- Reservation reservation
+- Passenger passenger
+- Seat seat
+}
+
+interface com.alasdeplata.repository.SeatRepository {
+}
+class com.alasdeplata.dto.auth.AuthCreateUserRequest {
+- String username
+- String password
+- String firstName
+- String lastName
+- String email
+- AuthCreateRoleRequest roleRequest
++ String password()
++ String firstName()
++ String username()
++ String lastName()
++ AuthCreateRoleRequest roleRequest()
++ String email()
+}
+
+
+class com.alasdeplata.models.Flight {
+- Long id
+- String flightNumber
+- Destination origin
+- Destination destination
+- LocalDateTime departureTime
+- LocalDateTime arrivalTime
+- Airplane airplane
+- FlightStatus status
+}
+
+enum com.alasdeplata.enums.InteractionType {
++  CHECK_IN
++  RESERVATION
++  INQUIRY
+}
+
+enum com.alasdeplata.enums.FlightClass {
++  ECONOMY
++  BUSINESS
++  FIRST_CLASS
+}
+
+enum com.alasdeplata.enums.PaymentMethod {
++  PAYPAL
++  BANK_TRANSFER
++  CARD
+}
+
+class com.alasdeplata.models.Seat {
+- Long id
+- Flight flight
+- String seatNumber
+- FlightClass flightClass
+- Boolean isAvailable
+}
+
+class com.alasdeplata.models.Role {
+- Long id
+- RoleEnum roleEnum
+- Set<Permission> permissionList
+}
+
+enum com.alasdeplata.enums.ReservationStatus {
++  CONFIRMED
++  CANCELED
+}
+
+class com.alasdeplata.config.SecurityConfig {
+- JwtUtils jwtUtils
++ SecurityFilterChain securityFilterChain(HttpSecurity)
++ AuthenticationManager authenticationManager(AuthenticationConfiguration)
++ AuthenticationProvider authenticationProvider(UserDetailServiceImpl)
++ PasswordEncoder passwordEncoder()
++ CorsFilter corsFilter()
+}
+
+
+class com.alasdeplata.dto.auth.AuthCreateRoleRequest {
+- List<String> roleListName
++ List<String> roleListName()
+}
+
+
+class com.alasdeplata.dto.auth.AuthLoginRequest {
+- String username
+- String password
++ String password()
++ String username()
+}
+
+
+interface com.alasdeplata.repository.UserRepository {
+~ Optional<UserPrincipal> findUserPrincipalByUsername(String)
+}
+
+interface com.alasdeplata.repository.FlightRepository {
+}
+class com.alasdeplata.models.Passenger {
+- Long id
+- UserPrincipal user
+- String passportNumber
+- String nationality
+- LocalDate birthDate
+}
+
+interface com.alasdeplata.repository.PassengerRepository {
+}
+class com.alasdeplata.services.impl.UserDetailServiceImpl {
+- PasswordEncoder passwordEncoder
+- JwtUtils jwtUtils
+- UserRepository userRepository
+- RoleRepository roleRepository
++ UserDetails loadUserByUsername(String)
++ AuthResponse loginUser(AuthLoginRequest)
++ Authentication authenticate(String,String)
++ AuthResponse createUser(AuthCreateUserRequest)
+}
+
+
+class com.alasdeplata.models.Reservation {
+- Long id
+- UserPrincipal user
+- Flight flight
+- LocalDateTime reservationDate
+- ReservationStatus status
+}
+
+interface com.alasdeplata.repository.ReservationRepository {
+}
+class com.alasdeplata.models.UserPrincipal {
+- Long id
+- String firstName
+- String lastName
+- String email
+- String username
+- String password
+- String phone
+- LocalDateTime createdAt
+- boolean isEnabled
+- boolean accountNoExpired
+- boolean accountNoLocked
+- boolean credentialNoExpired
+- Set<Role> roles
++ void prePersist()
+}
+
+
+class com.alasdeplata.config.filter.JwtTokenValidator {
+- JwtUtils jwtUtils
+# void doFilterInternal(HttpServletRequest,HttpServletResponse,FilterChain)
+}
+
+
+class com.alasdeplata.models.Airplane {
+- Long id
+- String model
+- Integer capacity
+- String registrationnumber
+}
+
+class com.alasdeplata.models.Permission {
+- Long id
+- String name
+}
+
+interface com.alasdeplata.repository.FlightPriceRepository {
+}
+class com.alasdeplata.utils.JwtUtils {
+- String privateKey
+- String userGenerator
++ String createToken(Authentication)
++ DecodedJWT validateToken(String)
++ String extractUsername(DecodedJWT)
++ Claim getSpecificClaim(DecodedJWT,String)
++ Map<String,Claim> returnAllClaims(DecodedJWT)
+}
+
+
+class com.alasdeplata.dto.auth.AuthResponse {
+- String username
+- String message
+- String jwt
+- boolean status
++ String jwt()
++ String message()
++ String username()
++ boolean status()
+}
+
+
+enum com.alasdeplata.enums.RoleEnum {
++  ADMIN
++  USER
++  INVITED
++  DEVELOPER
+}
+
+interface com.alasdeplata.repository.PaymentRepository {
+}
+interface com.alasdeplata.repository.RoleRepository {
+~ List<Role> findRoleEntitiesByRoleEnumIn(List<String>)
+}
+
+interface com.alasdeplata.repository.AirplaneRepository {
+}
+interface com.alasdeplata.services.PassengerService {
+}
+class com.alasdeplata.controllers.AuthController {
+- UserDetailServiceImpl userDetailsService
++ ResponseEntity<AuthResponse> register(AuthCreateUserRequest)
++ ResponseEntity<AuthResponse> login(AuthLoginRequest)
+}
+
+
+interface com.alasdeplata.repository.ReservationPassengerRepository {
+}
+class com.alasdeplata.models.AiInteraction {
+- Long id
+- UserPrincipal user
+- InteractionType interactionType
+- String message
+- String response
+- LocalDateTime createdAt
++ void prePersist()
+}
+
+
+enum com.alasdeplata.enums.FlightStatus {
++  PROGRAMMED
++  DELAYED
++  CANCELLED
+}
+
+
+
+org.springframework.data.jpa.repository.JpaRepository <|-- com.alasdeplata.repository.AiInteractionRepository
+org.springframework.data.jpa.repository.JpaRepository <|-- com.alasdeplata.repository.DestinatioRepository
+org.springframework.data.jpa.repository.JpaRepository <|-- com.alasdeplata.repository.SeatRepository
+org.springframework.data.jpa.repository.JpaRepository <|-- com.alasdeplata.repository.UserRepository
+org.springframework.data.jpa.repository.JpaRepository <|-- com.alasdeplata.repository.FlightRepository
+org.springframework.data.jpa.repository.JpaRepository <|-- com.alasdeplata.repository.PassengerRepository
+org.springframework.security.core.userdetails.UserDetailsService <|.. com.alasdeplata.services.impl.UserDetailServiceImpl
+org.springframework.data.jpa.repository.JpaRepository <|-- com.alasdeplata.repository.ReservationRepository
+org.springframework.web.filter.OncePerRequestFilter <|-- com.alasdeplata.config.filter.JwtTokenValidator
+org.springframework.data.jpa.repository.JpaRepository <|-- com.alasdeplata.repository.FlightPriceRepository
+org.springframework.data.jpa.repository.JpaRepository <|-- com.alasdeplata.repository.PaymentRepository
+org.springframework.data.jpa.repository.JpaRepository <|-- com.alasdeplata.repository.RoleRepository
+org.springframework.data.jpa.repository.JpaRepository <|-- com.alasdeplata.repository.AirplaneRepository
+org.springframework.data.jpa.repository.JpaRepository <|-- com.alasdeplata.repository.ReservationPassengerRepository
+@enduml

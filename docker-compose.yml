@@ -1,0 +1,49 @@
+#Es un archivo de configuración en YAML. automatiza el despliegue de múltiples
+#servicios (como bases de datos y aplicaciones web) usando Docker.
+version: '3.8'
+services: #Define los contenedores que vas a levantar
+  #Este contenedor levanta una base de datos PostgreSQL versión 15
+  postgres:
+    image: postgres:17
+    container_name: postgres-db
+    restart: always
+    environment:
+      POSTGRES_DB: alasdeplata #basededatos
+      POSTGRES_USER: postgres #credencial usuario
+      POSTGRES_PASSWORD: admin #credencial contraseña
+    ports:
+      - "5432:5432" #puerto mapeado
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - springboot-net
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+       PGADMIN_DEFAULT_EMAIL: "admin@admin.com"
+       PGADMIN_DEFAULT_PASSWORD: "admin"
+    ports:
+      - "80:80"
+    depends_on:
+      - postgres
+    networks:
+      - springboot-net  # ✅ CORRECTO
+
+
+  backend: #ServicioBackendSpringBoot
+    build: .
+    container_name: springboot-app
+    depends_on:
+      - postgres
+    ports: #puerto
+      - "8080:8080"
+    networks:
+      - springboot-net
+
+volumes:
+  pgdata:
+
+networks:
+  springboot-net:
+    driver: bridge
