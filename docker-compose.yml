@@ -40,6 +40,12 @@ services: #Define los contenedores que vas a levantar
       - "8080:8080"
     networks:
       - springboot-net
+  ollama:
+    hostname: ollama
+    container_name: ollama
+    image: ollama/ollama
+    ports:
+      - "11434:11434"
 
 volumes:
   pgdata:

@@ -1,8 +1,10 @@
 package com.alasdeplata.services;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import com.alasdeplata.dto.chat.FlightChatbotResponse;
 import com.alasdeplata.dto.flight.FlightDetailsResponse;
 import com.alasdeplata.dto.flight.FlightRequest;
 import com.alasdeplata.dto.flight.FlightRequestFilter;
@@ -28,4 +30,7 @@ public interface FlightService {
     List<FlightDetailsResponse> searchFlightDetails(FlightRequestFilter flightRequestFilter);
 
     List<FlightDetailsResponse> getFlightsToDestination(Long destinationId);
+
+    Optional<FlightChatbotResponse> buscarVueloParaChatbot(String destino, LocalDate fecha);
+
 }

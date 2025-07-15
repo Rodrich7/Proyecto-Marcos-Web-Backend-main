@@ -1,19 +1,16 @@
 package com.alasdeplata.controllers;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import com.alasdeplata.dto.chat.FlightChatbotResponse;
+import com.alasdeplata.models.Flight;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.alasdeplata.dto.flight.FlightDetailsResponse;
 import com.alasdeplata.dto.flight.FlightRequest;
@@ -96,5 +93,24 @@ public class FlightController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
     }
+    @GetMapping("/chatbot")
+    public ResponseEntity<FlightChatbotResponse> getFlightForChatbot(
+            @RequestParam String destino,
+            @RequestParam String fecha) {
+
+        // Puedes cambiar esta lógica más adelante para que busque en la base de datos
+        // Por ahora, devolvemos una respuesta simulada para probar el chatbot
+
+        FlightChatbotResponse vuelo = new FlightChatbotResponse(
+                destino,
+                fecha,
+                "08:30",
+                "299.99",
+                "LATAM Airlines"
+        );
+
+        return ResponseEntity.ok(vuelo);
+    }
+
 
 }

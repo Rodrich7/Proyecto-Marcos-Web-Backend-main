@@ -1,4 +1,5 @@
 package com.alasdeplata.services.impl;
+import java.time.LocalDate;
 import java.util.stream.Collectors;
 import java.math.BigDecimal;
 import java.time.Duration;
@@ -6,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import com.alasdeplata.dto.chat.FlightChatbotResponse;
 import org.springframework.stereotype.Service;
 
 import com.alasdeplata.dto.flight.FlightDetailsResponse;
@@ -186,6 +188,27 @@ public class FlightServiceImpl implements FlightService {
                                 );
                         }).toList();
         }
+    @Override
+    public Optional<FlightChatbotResponse> buscarVueloParaChatbot(String destino, LocalDate fecha) {
+        LocalDateTime inicio = fecha.atStartOfDay();
+        LocalDateTime fin = inicio.plusDays(1);
+
+        Optional<Flight> vuelo = flightRepository
+                .findFirstByDestination_CityIgnoreCaseAndDepartureTimeBetween(destino, inicio, fin);
+
+        if (vuelo.isEmpty()) return Optional.empty();
+
+        Flight f = vuelo.get();
+        String precio = "180.50";
+
+        return Optional.of(new FlightChatbotResponse(
+                f.getDestination().getCity(),
+                f.getDepartureTime().toLocalDate().toString(),
+                f.getDepartureTime().toLocalTime().toString(),
+                precio,
+                f.getAirplane().getAirline().getName()
+        ));
+    }
 
 
 
