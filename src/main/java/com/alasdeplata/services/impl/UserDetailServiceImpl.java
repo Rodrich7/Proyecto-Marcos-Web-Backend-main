@@ -91,7 +91,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
                         throw new BadCredentialsException("Invalid password");
                 }
 
-                return new UsernamePasswordAuthenticationToken(username, userDetails.getPassword(),
+                return new UsernamePasswordAuthenticationToken(userDetails,userDetails.getPassword(),
                         userDetails.getAuthorities());
         }
 

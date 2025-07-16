@@ -16,7 +16,7 @@ public record UserRequest(
                 @NotBlank @Size(min = 5) String password,
                 @NotNull Boolean termsAccepted,
                 Boolean newsletterSubscribed,
-                String phone,
+                @Size(min = 7,max = 9) String phone,
                 @NotNull Set<Long> roleIds) {
 
 }

@@ -202,6 +202,7 @@ public class FlightServiceImpl implements FlightService {
         String precio = "180.50";
 
         return Optional.of(new FlightChatbotResponse(
+                f.getId(),
                 f.getDestination().getCity(),
                 f.getDepartureTime().toLocalDate().toString(),
                 f.getDepartureTime().toLocalTime().toString(),

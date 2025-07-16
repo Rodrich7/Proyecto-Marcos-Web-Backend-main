@@ -39,8 +39,7 @@ public class JwtTokenValidator extends OncePerRequestFilter {
 
         if (
                 path.startsWith("/api/v1/auth/") ||
-                        (path.equals("/api/v1/contacto") && request.getMethod().equalsIgnoreCase("POST")) ||
-                        (path.equals("/api/chat") && request.getMethod().equalsIgnoreCase("POST"))
+                        (path.equals("/api/v1/contacto") && request.getMethod().equalsIgnoreCase("POST"))
         ) {
             filterChain.doFilter(request, response);
             return;

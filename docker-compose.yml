@@ -41,15 +41,23 @@ services: #Define los contenedores que vas a levantar
     networks:
       - springboot-net
   ollama:
-    hostname: ollama
-    container_name: ollama
     image: ollama/ollama
+    container_name: ollama-container
+    restart: unless-stopped
     ports:
-      - "11434:11434"
+      - "11435:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    networks:
+      - springboot-net
+    entrypoint: >
+      sh -c "ollama serve & sleep 2 && ollama run llama3"
+
 
 volumes:
   pgdata:
-
+  ollama-data:
 networks:
   springboot-net:
     driver: bridge
+

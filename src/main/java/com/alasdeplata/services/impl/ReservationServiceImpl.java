@@ -59,21 +59,25 @@ public class ReservationServiceImpl implements ReservationService {
 
         @Override
         public ReservationResponse createReservation(ReservationRequest reservation) {
-                Reservation entity = reservationMapper.toEntity(reservation);
+                Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+                String username = authentication.getName();
 
-                if (reservation.userId() != null) {
-                        entity.setUser(userRepository.findById(reservation.userId())
-                                        .orElseThrow(() -> new RuntimeException("User not found")));
-                }
+                UserEntity user = userRepository.findUserEntityByUsername(username)
+                        .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-                if (reservation.flightId() != null) {
-                        entity.setFlight(flightRepository.findById(reservation.flightId())
-                                        .orElseThrow(() -> new RuntimeException("Flight not found")));
-                }
+                Flight flight = flightRepository.findById(reservation.flightId())
+                        .orElseThrow(() -> new RuntimeException("Vuelo no encontrado"));
+
+                Reservation entity = Reservation.builder()
+                        .user(user)
+                        .flight(flight)
+                        .status(ReservationStatus.CONFIRMED) // o el status que desees por defecto
+                        .build();
 
                 Reservation saved = reservationRepository.save(entity);
                 return reservationMapper.toResponse(saved);
         }
+
 
         @Override
         public void deleteReservation(Long id) {

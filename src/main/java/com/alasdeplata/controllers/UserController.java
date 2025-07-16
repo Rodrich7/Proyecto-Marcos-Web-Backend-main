@@ -46,6 +46,21 @@ public class UserController {
 
     @PostMapping
     public ResponseEntity<UserResponse> create(@Valid @RequestBody UserRequest user) {
+        if (user.termsAccepted() == null) {
+            throw new IllegalArgumentException("Debes aceptar los términos y condiciones.");
+        }
+        user = new UserRequest(
+                user.firstName(),
+                user.lastName(),
+                user.name(),
+                user.email().toLowerCase(),
+                user.username().toLowerCase(), // 👈 evitar conflicto por mayúsculas
+                user.password(),
+                user.termsAccepted(),
+                user.newsletterSubscribed(),
+                user.phone(),
+                user.roleIds()
+        );
         UserResponse savedItem = userService.createUser(user);
         return new ResponseEntity<>(savedItem, HttpStatus.CREATED);
     }

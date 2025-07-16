@@ -102,6 +102,7 @@ public class FlightController {
         // Por ahora, devolvemos una respuesta simulada para probar el chatbot
 
         FlightChatbotResponse vuelo = new FlightChatbotResponse(
+                1L,
                 destino,
                 fecha,
                 "08:30",

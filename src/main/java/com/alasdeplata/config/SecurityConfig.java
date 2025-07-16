@@ -123,6 +123,9 @@ public class SecurityConfig {
 
                     http.requestMatchers(HttpMethod.POST, "/api/chat").permitAll();
 
+                    http.requestMatchers(HttpMethod.GET, "/api/v1/auth/me").authenticated();
+
+
 
 
 
